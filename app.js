@@ -86,7 +86,6 @@ class Screen {
             this.clearInput();
             this.addUpdateButton.textContent = "SAVE";
 
-            // this.repo.addPerson();
         } else {
             console.log("There is a free space");
         }
