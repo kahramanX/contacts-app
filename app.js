@@ -11,12 +11,65 @@ class Screen {
         this.name = document.getElementById("Name");
         this.surname = document.getElementById("Surname");
         this.email = document.getElementById("Email");
-        this.addUpdateButton = document.getElementsByClassName("submit-btn");
+        this.addUpdateButton = document.getElementsByClassName("submit-btn")[0];
         this.form = document.getElementById("form").addEventListener("submit", this.saveUpdate.bind(this));
-        this.personList = document.querySelector(".person-list");
-        this.tableElement = document.getElementsByTagName("table")[0];
-        this.repo = new Repo();
-        console.log(this.tableElement);
+        this.tableElement = document.querySelector(".person-list");
+        this.tableElement.addEventListener("click", this.buttonFinder.bind(this));
+        this.inputElement = document.getElementsByTagName("input");
+        this.trElement = document.getElementsByTagName("tr").addEventListener("click", this.buttonFinder.bind(this));
+        // this.repo = new Repo();
+    }
+
+    clearInput() {
+        let clearArr = Array.from(this.inputElement);
+        clearArr.forEach(arr => arr.value = "");
+    }
+
+    buttonFinder(e) {
+        let clicked = e.target;
+
+        if (clicked.classList.contains("delete-btn")) {
+
+            console.log("delete worked");
+            clicked.parentElement.parentElement.remove();
+
+        }
+        if (clicked.classList.contains("edit-btn")) {
+
+            console.log("edit worked");
+
+            this.addUpdateButton.textContent = "New Update";
+            this.runEditButton(clicked);
+            
+        }
+
+    }
+
+    runEditButton(e) {
+        let clicked = e;
+        let tr = e.parentElement.parentElement.children;
+        let arrTr = Array.from(tr);
+        let popped = arrTr.pop();
+
+        let newArr = [];
+        arrTr.forEach(arr =>
+            newArr.push(arr.innerHTML));
+
+            console.log(clicked);
+        this.addToInput(newArr, clicked);
+    }
+
+    addToInput(values, clicked) {
+
+        console.log(values);
+        let input = Array.from(this.inputElement);
+        console.log(input);
+
+        values.forEach((value, index) => {
+            input[index].value = value;
+        })
+
+        clicked.parentElement.parentElement.remove();
 
     }
 
@@ -27,23 +80,22 @@ class Screen {
         const person = new Person(this.name.value, this.surname.value, this.email.value);
         let result = Util.freeSpacesCheck(person.name, person.surname, person.email);
 
-        console.log(person.name);
-        console.log(person.surname);
-        console.log(person.email);
-
         // Tüm alanlar kontrol
         if (result) {
             console.log("Başarılı");
-            this.addPersonToScreen(person)
-            this.repo.addPerson();
-        }else{
+            this.addPersonToScreen(person);
+            this.clearInput();
+            this.addUpdateButton.textContent = "SAVE";
+
+            // this.repo.addPerson();
+        } else {
             console.log("Boş alan var");
         }
     }
 
-    addPersonToScreen(person){
+    addPersonToScreen(person) {
 
-        let createElement=`
+        let createElement = `
         <tr>
         <td>${person.name}</td>
         <td>${person.surname}</td>
@@ -54,13 +106,16 @@ class Screen {
         </td>
         </tr>`;
 
-        this.tableElement.lastChild.innerHTML += createElement;
+        this.tableElement.innerHTML += createElement;
+    }
+
+    deletePersonFromList() {
 
     }
 }
 
-class Util{
-    static freeSpacesCheck(...spaces){
+class Util {
+    static freeSpacesCheck(...spaces) {
         let result = true;
 
         spaces.forEach(space => {
@@ -70,34 +125,6 @@ class Util{
             }
         });
         return result;
-    }
-}
-
-class Repo {
-    constructor() {
-        this.allPerson = this.bringDatas();
-    }
-
-    bringDatas() {
-        let allPersonLocale;
-
-        if (localStorage.getItem("allPerson") == null) {
-
-            allPersonLocale = [];
-
-        } else {
-            allPersonLocale = JSON.parse(localStorage.getItem("allPerson"));
-        }
-
-        return allPersonLocale;
-    }
-
-    addPerson(person) {
-        const allPersonLocale = this.bringDatas();
-
-        allPersonLocale.push(person);
-
-        localStorage.setItem("allPerson", JSON.stringify(allPersonLocale));
     }
 }
 
