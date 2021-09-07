@@ -17,9 +17,8 @@ class Screen {
         this.tableElement.addEventListener("click", this.buttonFinder.bind(this));
         this.inputElement = document.getElementsByTagName("input");
         this.trElement = document.getElementsByTagName("tr").addEventListener("click", this.buttonFinder.bind(this));
-        // this.repo = new Repo();
     }
-
+    //cleaning input value after submit
     clearInput() {
         let clearArr = Array.from(this.inputElement);
         clearArr.forEach(arr => arr.value = "");
@@ -40,7 +39,7 @@ class Screen {
 
             this.addUpdateButton.textContent = "New Update";
             this.runEditButton(clicked);
-            
+
         }
 
     }
@@ -55,7 +54,7 @@ class Screen {
         arrTr.forEach(arr =>
             newArr.push(arr.innerHTML));
 
-            console.log(clicked);
+        console.log(clicked);
         this.addToInput(newArr, clicked);
     }
 
@@ -80,21 +79,21 @@ class Screen {
         const person = new Person(this.name.value, this.surname.value, this.email.value);
         let result = Util.freeSpacesCheck(person.name, person.surname, person.email);
 
-        // Tüm alanlar kontrol
+        // all spaces controlling   
         if (result) {
-            console.log("Başarılı");
+            console.log("Success");
             this.addPersonToScreen(person);
             this.clearInput();
             this.addUpdateButton.textContent = "SAVE";
 
             // this.repo.addPerson();
         } else {
-            console.log("Boş alan var");
+            console.log("There is a free space");
         }
     }
 
     addPersonToScreen(person) {
-
+        // creating HTML element
         let createElement = `
         <tr>
         <td>${person.name}</td>
@@ -115,6 +114,7 @@ class Screen {
 }
 
 class Util {
+    // controling free spaces in input
     static freeSpacesCheck(...spaces) {
         let result = true;
 
@@ -128,7 +128,7 @@ class Util {
     }
 }
 
-// screen class'ının çalışmasını sağlıyor
+// Makes the screen class work
 document.addEventListener("DOMContentLoaded", function (e) {
     const screen = new Screen();
 })
